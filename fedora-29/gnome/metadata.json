@@ -1,0 +1,8 @@
+{
+  "auto_build": "True",
+  "box_name": "fedora-29-gnome",
+  "box_tag": "ahstn/fedora-29-gnome",
+  "description": "Fedora 29 Gnome desktop development box designed to be used with vagrant",
+  "private": "False",
+  "short_description": "Fedora 29 Gnome Desktop"
+}

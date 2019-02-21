@@ -1,0 +1,73 @@
+{
+  "variables": {
+    "access_token": "{{env `VAGRANT_TOKEN`}}",
+    "boot_command_prefix": "",
+    "box_tag": "",
+    "compression_level": "6",
+    "iso_checksum": "",
+    "iso_checksum_type": "",
+    "iso_url": "",
+    "vm_disk_adapter_type": "scsi",
+    "vm_disk_size": "36864",
+    "vm_memory": "1024",
+    "vm_name": "",
+    "vm_ssh_password": "vagrant",
+    "vm_ssh_username": "vagrant",
+    "vm_vcpu": "1"
+  },
+  "builders": [
+    {
+      "boot_command": [
+        "<tab> {{ user `boot_command_prefix` }}=http://{{ .HTTPIP }}:{{ .HTTPPort }}/kickstart.cfg <enter><wait>"
+      ],
+      "cpus": "{{ user `vm_vcpu` }}",
+      "disk_size": "{{ user `vm_disk_size` }}",
+      "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
+      "guest_os_type": "Fedora_64",
+      "hard_drive_interface": "{{ user `vm_disk_adapter_type` }}",
+      "headless": true,
+      "http_directory": "http",
+      "iso_checksum_type": "{{ user `iso_checksum_type` }}",
+      "iso_checksum": "{{ user `iso_checksum` }}",
+      "iso_url": "{{ user `iso_url` }}",
+      "memory": "{{ user `vm_memory` }}",
+      "output_directory": "output-{{ user `vm_name` }}-{{ build_type }}-{{ timestamp }}",
+      "shutdown_command": "echo 'vagrant'|sudo -S shutdown -h now",
+      "ssh_password": "{{ user `vm_ssh_password` }}",
+      "ssh_username": "{{ user `vm_ssh_username` }}",
+      "ssh_wait_timeout": "60m",
+      "type": "virtualbox-iso",
+      "virtualbox_version_file": ".vbox_version",
+      "vm_name": "{{ user `vm_name` }}-{{ timestamp }}"
+    }
+  ],
+  "post-processors": [
+    {
+      "keep_input_artifact": false,
+      "output": "dist/{{ user `vm_name` }}-{{.Provider}}-{{ timestamp }}.box",
+      "type": "vagrant"
+    },
+    {
+      "type": "vagrant-cloud",
+      "box_tag": "{{user `box_tag`}}",
+      "access_token": "{{user `access_token`}}",
+      "version": "{{ timestamp }}"
+    }
+  ],
+  "provisioners": [
+    {
+      "execute_command": "echo 'vagrant' | {{.Vars}} sudo -E -S bash '{{.Path}}'",
+      "scripts": [
+        "scripts/sshd.sh",
+        "scripts/update.sh",
+        "scripts/vagrant.sh",
+        "scripts/docker.sh",
+        "scripts/vmtool.sh",
+        "scripts/packages.sh",
+        "scripts/cleanup.sh"
+      ],
+      "type": "shell",
+      "expect_disconnect": "true"
+    }
+  ]
+}

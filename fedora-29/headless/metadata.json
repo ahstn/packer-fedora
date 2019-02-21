@@ -1,0 +1,8 @@
+{
+  "auto_build": "True",
+  "box_name": "fedora-29-headless",
+  "box_tag": "ahstn/fedora-29-headless",
+  "description": "Fedora 29 headless development box designed to be used with vagrant",
+  "private": "False",
+  "short_description": "Fedora 29 Headless"
+}

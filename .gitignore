@@ -1,0 +1,6 @@
+dist/
+packer_cache/
+
+build.hwm
+build.pwd
+build.pwi
